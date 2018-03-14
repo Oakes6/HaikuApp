@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TWO0005Haiku</string>
+    <string name="radio1">Adjectives</string>
+    <string name="radio2">Nouns</string>
+    <string name="radio3">Verbs</string>
+    <string name="radio4">Other</string>
+</resources>
