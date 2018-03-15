@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_weight="1"
-        android:text="RadioButton"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        android:text="@string/radio1"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,10 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_weight="1"
-        android:text="RadioButton"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        android:text="@string/radio2"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioButton" />
+        app:layout_constraintTop_toBottomOf="@id/radioButton" />
 
     <RadioButton
         android:id="@+id/radioButton4"
@@ -36,10 +36,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="4dp"
         android:layout_weight="1"
-        android:text="RadioButton"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        android:text="@string/radio4"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioButton3" />
+        app:layout_constraintTop_toBottomOf="@id/radioButton3" />
 
     <RadioButton
         android:id="@+id/radioButton3"
@@ -47,10 +47,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_weight="1"
-        android:text="RadioButton"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        android:text="@string/radio3"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioButton2" />
+        app:layout_constraintTop_toBottomOf="@id/radioButton2" />
 
     <Button
         android:id="@+id/button"
@@ -59,10 +59,10 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="52dp"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        android:text="@string/add_word"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+        app:layout_constraintTop_toBottomOf="@id/spinner" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -72,8 +72,28 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/top_separator"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="#ff888888"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        tools:layout_editor_absoluteY="128dp" />
+
+    <View
+        android:id="@+id/bottom_separator"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="#ff888888"
+        app:layout_constraintBottom_toTopOf="@id/guideline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -95,6 +115,28 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="359dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_separator" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="329dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/delete_last_word"
+        app:layout_constraintBottom_toTopOf="@id/bottom_separator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText3"
+        app:layout_constraintVertical_bias="0.918" />
 
 </android.support.constraint.ConstraintLayout>
 

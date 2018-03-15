@@ -8,6 +8,6 @@ public class MainInteractionActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return null;
+        return new MainInteractionFragment();
     }
 }
