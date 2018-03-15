@@ -6,4 +6,9 @@
     <string name="radio4">Other</string>
     <string name="add_word">Add</string>
     <string name="delete_last_word">DELETE THE LAST WORD ADDED</string>
+    <string name="start_over">START OVER</string>
+    <string name="display">DISPLAY</string>
+    <string name="haikuLine1">1)</string>
+    <string name="haikuLine2">2)</string>
+    <string name="haikuLine3">3)</string>
 </resources>
