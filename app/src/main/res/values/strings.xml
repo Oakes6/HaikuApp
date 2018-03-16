@@ -4,7 +4,6 @@
     <string name="radio2">Nouns</string>
     <string name="radio3">Verbs</string>
     <string name="radio4">Other</string>
-    <string name="add_word">Add</string>
     <string name="delete_last_word">DELETE THE LAST WORD ADDED</string>
     <string name="start_over">START OVER</string>
     <string name="display">DISPLAY</string>

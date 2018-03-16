@@ -5,12 +5,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -27,6 +31,7 @@ public class MainInteractionFragment extends Fragment {
     private Button mDisplayHaikuButton;
     private Button mStartOverButton;
     private Button mDeleteWordButton;
+
     private Spinner mWordSpinner;
 
     private String[] adjectivesArr;
@@ -36,12 +41,21 @@ public class MainInteractionFragment extends Fragment {
 
     private HashMap<String, Integer> syllableDict;
 
-    private EditText mHaikuLine1;
-    private EditText mHaikuLine2;
-    private EditText mHaikuLine3;
+    private TextView mHaikuLine1;
+    private TextView mHaikuLine2;
+    private TextView mHaikuLine3;
 
     private int currentHaikuLineSyllables;
     private int currentHaikuLine;
+    private int currentRadioId;
+
+    private boolean isHaikuFull;
+    private boolean isCurrentLineFull;
+
+    private String wordToAdd;
+    private String line1;
+    private String line2;
+    private String line3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +97,10 @@ public class MainInteractionFragment extends Fragment {
 
         currentHaikuLine = 1;
         currentHaikuLineSyllables = 0;
+        isHaikuFull = false;
+        isCurrentLineFull = false;
+        wordToAdd = "";
+        currentRadioId = -1;
     }
 
     @Override
@@ -92,10 +110,18 @@ public class MainInteractionFragment extends Fragment {
         // hides buttons before user action
         mAddWordButton = (Button) v.findViewById(R.id.addButton);
         mAddWordButton.setVisibility(View.INVISIBLE);
+
         mWordSpinner = (Spinner) v.findViewById(R.id.spinner);
         mWordSpinner.setVisibility(View.INVISIBLE);
+
         mDeleteWordButton = (Button) v.findViewById(R.id.deleteButton);
         mDeleteWordButton.setVisibility(View.INVISIBLE);
+
+        mStartOverButton = (Button) v.findViewById(R.id.start_over_button);
+        mStartOverButton.setVisibility(View.INVISIBLE);
+
+        mDisplayHaikuButton = (Button) v.findViewById(R.id.display_haiku_button);
+        mDisplayHaikuButton.setVisibility(View.INVISIBLE);
 
         mRadioGroup = (RadioGroup) v.findViewById(R.id.radioGroup);
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -103,11 +129,109 @@ public class MainInteractionFragment extends Fragment {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 mAddWordButton.setVisibility(View.VISIBLE);
                 mWordSpinner.setVisibility(View.VISIBLE);
-
+                ArrayAdapter<CharSequence> adapter;
                 //populate spinner w/ appropriate words and weights
                 //populate add button with appropriate text
-                ArrayAdapter<CharSequence> adapter = populateArrayAdapter(i);
+                if (i == R.id.adjectivesRadioButton) {
+                    adapter = populateArrayAdapter(i, adjectivesArr);
+                }
+                else if (i == R.id.nounsRadioButton) {
+                    adapter = populateArrayAdapter(i, nounsArr);
+                }
+                else if (i == R.id.verbsRadioButton) {
+                    adapter = populateArrayAdapter(i, verbsArr);
+                }
+                else {
+                    adapter = populateArrayAdapter(i, otherArr);
+                }
+
                 mWordSpinner.setAdapter(adapter);
+            }
+        });
+
+        mWordSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String change = mWordSpinner.getSelectedItem().toString().toUpperCase();
+                String update = "ADD \"" + change + "\" TO THE HAIKU";
+                wordToAdd = change.toLowerCase();
+                mAddWordButton.setText(update);
+            }
+
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                return;
+            }
+        });
+
+        mHaikuLine1 = (TextView) v.findViewById(R.id.textView1);
+        mHaikuLine2 = (TextView) v.findViewById(R.id.textView2);
+        mHaikuLine3 = (TextView) v.findViewById(R.id.textView3);
+        mAddWordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDeleteWordButton.setVisibility(View.VISIBLE);
+                mDisplayHaikuButton.setVisibility(View.VISIBLE);
+                mStartOverButton.setVisibility(View.VISIBLE);
+                if (!isHaikuFull) {
+                    ArrayAdapter<CharSequence> adapter;
+                    //grab current line text and add word
+                    if (currentHaikuLine == 2) {
+                        int weight = syllableDict.get(wordToAdd);
+                        currentHaikuLineSyllables += weight;
+                        mHaikuLine2.append(" " + wordToAdd);
+                        currentRadioId = mRadioGroup.getCheckedRadioButtonId();
+                        if (currentHaikuLineSyllables == 7) {
+                            currentHaikuLine++;
+                            currentHaikuLineSyllables = 0;
+                        }
+                        if (currentRadioId == R.id.adjectivesRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, adjectivesArr);
+                        }
+                        else if (currentRadioId == R.id.nounsRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, nounsArr);
+                        }
+                        else if (currentRadioId == R.id.verbsRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, verbsArr);
+                        }
+                        else {
+                            adapter = populateArrayAdapter(currentRadioId, otherArr);
+                        }
+                        mWordSpinner.setAdapter(adapter);
+                    }
+                    else if (currentHaikuLine == 1 || currentHaikuLine == 3) {
+                        int weight = syllableDict.get(wordToAdd);
+                        currentHaikuLineSyllables += weight;
+                        currentRadioId = mRadioGroup.getCheckedRadioButtonId();
+                        if (currentHaikuLine == 1) {
+                            mHaikuLine1.append(" " + wordToAdd);
+                        }
+                        if (currentHaikuLine == 3) {
+                            mHaikuLine3.append(" " + wordToAdd);
+                        }
+                        if (currentHaikuLineSyllables == 5) {
+                            currentHaikuLine++;
+                            currentHaikuLineSyllables = 0;
+                        }
+                        if (currentRadioId == R.id.adjectivesRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, adjectivesArr);
+                        }
+                        else if (currentRadioId == R.id.nounsRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, nounsArr);
+                        }
+                        else if (currentRadioId == R.id.verbsRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, verbsArr);
+                        }
+                        else {
+                            adapter = populateArrayAdapter(currentRadioId, otherArr);
+                        }
+                        mWordSpinner.setAdapter(adapter);
+                    }
+                    else {
+                        isHaikuFull = true;
+                    }
+                }
+                else {
+                    return;
+                }
             }
         });
 
@@ -115,81 +239,70 @@ public class MainInteractionFragment extends Fragment {
         return v;
     }
 
-    private ArrayAdapter<CharSequence> populateArrayAdapter(int id) {
+    private ArrayAdapter<CharSequence> populateArrayAdapter(int id, String[] array) {
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+        currentRadioId = id;
         //populate spinner w/ appropriate words and weights
         //populate add button with appropriate text
-        if (id == R.id.adjectivesRadioButton) {
-
-            if (currentHaikuLine == 2) {
-                if (currentHaikuLineSyllables <= 3 ) {
-                    adapter.addAll(adjectivesArr);
-                }
-                else if (currentHaikuLineSyllables == 4) {
-                    // add all 3, 2, and 1
-                    for (int i = 0; i < adjectivesArr.length; i++) {
-                        if (syllableDict.get(adjectivesArr[i]) < 4) {
-                            adapter.add(adjectivesArr[i]);
-                        }
+        if (currentHaikuLine == 2) {
+            if (currentHaikuLineSyllables <= 3 ) {
+                adapter.addAll(array);
+            }
+            else if (currentHaikuLineSyllables == 4) {
+                // add all 3, 2, and 1
+                for (int i = 0; i < array.length; i++) {
+                    if (syllableDict.get(array[i]) < 4) {
+                        adapter.add(array[i]);
                     }
                 }
-                else if (currentHaikuLineSyllables == 5) {
-                    // load all 2, and 1
-                    for (int i = 0; i < adjectivesArr.length; i++) {
-                        if (syllableDict.get(adjectivesArr[i]) < 3) {
-                            adapter.add(adjectivesArr[i]);
-                        }
-                    }
-                }
-                else {
-                    // load all 1
-                    for (int i = 0; i < adjectivesArr.length; i++) {
-                        if (syllableDict.get(adjectivesArr[i]) < 2) {
-                            adapter.add(adjectivesArr[i]);
-                        }
+            }
+            else if (currentHaikuLineSyllables == 5) {
+                // load all 2, and 1
+                for (int i = 0; i < array.length; i++) {
+                    if (syllableDict.get(array[i]) < 3) {
+                        adapter.add(array[i]);
                     }
                 }
             }
             else {
-                if (currentHaikuLineSyllables <= 1) {
-                    // load all
-                    adapter.addAll(adjectivesArr);
-                }
-                else if (currentHaikuLineSyllables == 2) {
-                    // load all 3, 2, and 1
-                    for (int i = 0; i < adjectivesArr.length; i++) {
-                        if (syllableDict.get(adjectivesArr[i]) < 4) {
-                            adapter.add(adjectivesArr[i]);
-                        }
-                    }
-                }
-                else if (currentHaikuLineSyllables == 3) {
-                    // load all 2, and 1
-                    for (int i = 0; i < adjectivesArr.length; i++) {
-                        if (syllableDict.get(adjectivesArr[i]) < 3) {
-                            adapter.add(adjectivesArr[i]);
-                        }
-                    }
-                }
-                else {
-                    // load all 1
-                    for (int i = 0; i < adjectivesArr.length; i++) {
-                        if (syllableDict.get(adjectivesArr[i]) < 2) {
-                            adapter.add(adjectivesArr[i]);
-                        }
+                // load all 1
+                for (int i = 0; i < array.length; i++) {
+                    if (syllableDict.get(array[i]) < 2) {
+                        adapter.add(array[i]);
                     }
                 }
             }
         }
-        else if (id == R.id.nounsRadioButton) {
-            adapter.addAll(nounsArr);
-        }
-        else if (id == R.id.verbsRadioButton) {
-            adapter.addAll(verbsArr);
-        }
         else {
-            adapter.addAll(otherArr);
+            if (currentHaikuLineSyllables <= 1) {
+                // load all
+                adapter.addAll(array);
+            }
+            else if (currentHaikuLineSyllables == 2) {
+                // load all 3, 2, and 1
+                for (int i = 0; i < array.length; i++) {
+                    if (syllableDict.get(array[i]) < 4) {
+                        adapter.add(array[i]);
+                    }
+                }
+            }
+            else if (currentHaikuLineSyllables == 3) {
+                // load all 2, and 1
+                for (int i = 0; i < array.length; i++) {
+                    if (syllableDict.get(array[i]) < 3) {
+                        adapter.add(array[i]);
+                    }
+                }
+            }
+            else {
+                // load all 1
+                for (int i = 0; i < array.length; i++) {
+                    if (syllableDict.get(array[i]) < 2) {
+                        adapter.add(array[i]);
+                    }
+                }
+            }
         }
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
