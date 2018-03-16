@@ -1,5 +1,6 @@
 package edu.auburn.eng.csse.comp3710.two0005.midterm18;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -50,7 +51,6 @@ public class MainInteractionFragment extends Fragment {
     private int currentRadioId;
 
     private boolean isHaikuFull;
-    private boolean isCurrentLineFull;
 
     private String wordToAdd;
     private String line1;
@@ -98,7 +98,6 @@ public class MainInteractionFragment extends Fragment {
         currentHaikuLine = 1;
         currentHaikuLineSyllables = 0;
         isHaikuFull = false;
-        isCurrentLineFull = false;
         wordToAdd = "";
         currentRadioId = -1;
     }
@@ -123,6 +122,7 @@ public class MainInteractionFragment extends Fragment {
         mDisplayHaikuButton = (Button) v.findViewById(R.id.display_haiku_button);
         mDisplayHaikuButton.setVisibility(View.INVISIBLE);
 
+        // Listener for radio buttons that update the spinner
         mRadioGroup = (RadioGroup) v.findViewById(R.id.radioGroup);
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -149,6 +149,7 @@ public class MainInteractionFragment extends Fragment {
             }
         });
 
+        // Listener for updating the text seen inside of the add word button
         mWordSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String change = mWordSpinner.getSelectedItem().toString().toUpperCase();
@@ -162,6 +163,7 @@ public class MainInteractionFragment extends Fragment {
             }
         });
 
+        //Listener for adding words to the Haiku and updating the spinner
         mHaikuLine1 = (TextView) v.findViewById(R.id.textView1);
         mHaikuLine2 = (TextView) v.findViewById(R.id.textView2);
         mHaikuLine3 = (TextView) v.findViewById(R.id.textView3);
@@ -199,6 +201,9 @@ public class MainInteractionFragment extends Fragment {
                     }
                     else if (currentHaikuLine == 1 || currentHaikuLine == 3) {
                         int weight = syllableDict.get(wordToAdd);
+                        if ((currentHaikuLineSyllables + weight) > 5) {
+                            return;
+                        }
                         currentHaikuLineSyllables += weight;
                         currentRadioId = mRadioGroup.getCheckedRadioButtonId();
                         if (currentHaikuLine == 1) {
@@ -208,8 +213,10 @@ public class MainInteractionFragment extends Fragment {
                             mHaikuLine3.append(" " + wordToAdd);
                         }
                         if (currentHaikuLineSyllables == 5) {
-                            currentHaikuLine++;
-                            currentHaikuLineSyllables = 0;
+                            if (currentHaikuLine == 1) {
+                                currentHaikuLine++;
+                                currentHaikuLineSyllables = 0;
+                            }
                         }
                         if (currentRadioId == R.id.adjectivesRadioButton) {
                             adapter = populateArrayAdapter(currentRadioId, adjectivesArr);
@@ -235,7 +242,133 @@ public class MainInteractionFragment extends Fragment {
             }
         });
 
+        // Listener for starting the application over
+        mStartOverButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = getActivity().getPackageManager()
+                        .getLaunchIntentForPackage(getActivity().getPackageName());
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }
+        });
 
+        // Listener for deleting a word from the haiku
+        mDeleteWordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // gets the text from the current line, edits it, and re-sets it to the current line
+                ArrayAdapter<CharSequence> adapter;
+                String textToEdit;
+                String wordRemoved;
+                int syllablesOfWordRemoved;
+                int lastindex;
+                currentRadioId = mRadioGroup.getCheckedRadioButtonId();
+                // if line 2
+                if (currentHaikuLine == 2) {
+                    textToEdit = mHaikuLine2.getText().toString();
+                    // find first space and cut to it
+                    lastindex = textToEdit.lastIndexOf(" ");
+                    wordRemoved = textToEdit.substring(lastindex + 1,textToEdit.length());
+                    syllablesOfWordRemoved = syllableDict.get(wordRemoved);
+                    textToEdit = textToEdit.substring(0, lastindex);
+                    mHaikuLine2.setText(textToEdit);
+                    if (textToEdit.equals("")) {
+                        // end of line
+                        currentHaikuLine--;
+                        currentHaikuLineSyllables = 5;
+                    }
+                    else {
+                        currentHaikuLineSyllables -= syllablesOfWordRemoved;
+                    }
+                    isHaikuFull = false;
+                    // repopulate the spinner
+                    if (currentRadioId == R.id.adjectivesRadioButton) {
+                        adapter = populateArrayAdapter(currentRadioId, adjectivesArr);
+                    }
+                    else if (currentRadioId == R.id.nounsRadioButton) {
+                        adapter = populateArrayAdapter(currentRadioId, nounsArr);
+                    }
+                    else if (currentRadioId == R.id.verbsRadioButton) {
+                        adapter = populateArrayAdapter(currentRadioId, verbsArr);
+                    }
+                    else {
+                        adapter = populateArrayAdapter(currentRadioId, otherArr);
+                    }
+                    mWordSpinner.setAdapter(adapter);
+                }
+                else {
+                    // if line 1
+                    if (currentHaikuLine == 1) {
+                        textToEdit = mHaikuLine1.getText().toString();
+                        if (textToEdit.equals("")) {
+                            return;
+                        }
+                        // find first space and cut to it
+                        lastindex = textToEdit.lastIndexOf(" ");
+                        wordRemoved = textToEdit.substring(lastindex + 1,textToEdit.length());
+                        syllablesOfWordRemoved = syllableDict.get(wordRemoved);
+                        textToEdit = textToEdit.substring(0, lastindex);
+                        mHaikuLine1.setText(textToEdit);
+                        if (textToEdit.equals("")) {
+                            // end of line
+                            currentHaikuLineSyllables = 0;
+                        }
+                        else {
+                            currentHaikuLineSyllables -= syllablesOfWordRemoved;
+                        }
+                        isHaikuFull = false;
+                        // repopulate the spinner
+                        if (currentRadioId == R.id.adjectivesRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, adjectivesArr);
+                        }
+                        else if (currentRadioId == R.id.nounsRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, nounsArr);
+                        }
+                        else if (currentRadioId == R.id.verbsRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, verbsArr);
+                        }
+                        else {
+                            adapter = populateArrayAdapter(currentRadioId, otherArr);
+                        }
+                        mWordSpinner.setAdapter(adapter);
+                    }
+                    // if line 3
+                    else {
+                        textToEdit = mHaikuLine3.getText().toString();
+                        // find first space and cut to it
+                        lastindex = textToEdit.lastIndexOf(" ");
+                        wordRemoved = textToEdit.substring(lastindex + 1,textToEdit.length());
+                        syllablesOfWordRemoved = syllableDict.get(wordRemoved);
+                        textToEdit = textToEdit.substring(0, lastindex);
+                        mHaikuLine3.setText(textToEdit);
+                        if (textToEdit.equals("")) {
+                            // end of line
+                            currentHaikuLine--;
+                            currentHaikuLineSyllables = 7;
+                        }
+                        else {
+                            currentHaikuLineSyllables -= syllablesOfWordRemoved;
+                        }
+                        isHaikuFull = false;
+                        // repopulate the spinner
+                        if (currentRadioId == R.id.adjectivesRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, adjectivesArr);
+                        }
+                        else if (currentRadioId == R.id.nounsRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, nounsArr);
+                        }
+                        else if (currentRadioId == R.id.verbsRadioButton) {
+                            adapter = populateArrayAdapter(currentRadioId, verbsArr);
+                        }
+                        else {
+                            adapter = populateArrayAdapter(currentRadioId, otherArr);
+                        }
+                        mWordSpinner.setAdapter(adapter);
+                    }
+                }
+            }
+        });
         return v;
     }
 
