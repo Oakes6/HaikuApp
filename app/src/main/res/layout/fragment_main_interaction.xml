@@ -80,8 +80,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/textView1"
+        android:editable="false"
         android:layout_width="344dp"
         android:layout_height="20dp"
         android:background="@android:color/transparent"
@@ -89,8 +90,9 @@
         app:layout_constraintStart_toEndOf="@id/textView4"
         app:layout_constraintTop_toBottomOf="@id/top_separator" />
 
-    <TextView
+    <EditText
         android:id="@+id/textView2"
+        android:editable="false"
         android:background="@android:color/transparent"
         android:layout_width="344dp"
         android:layout_height="20dp"
@@ -98,8 +100,9 @@
         app:layout_constraintStart_toEndOf="@id/textView5"
         app:layout_constraintTop_toBottomOf="@id/textView1" />
 
-    <TextView
+    <EditText
         android:id="@+id/textView3"
+        android:editable="false"
         android:background="@android:color/transparent"
         android:layout_width="344dp"
         android:layout_height="20dp"

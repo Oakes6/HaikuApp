@@ -42,9 +42,9 @@ public class MainInteractionFragment extends Fragment {
 
     private HashMap<String, Integer> syllableDict;
 
-    private TextView mHaikuLine1;
-    private TextView mHaikuLine2;
-    private TextView mHaikuLine3;
+    private EditText mHaikuLine1;
+    private EditText mHaikuLine2;
+    private EditText mHaikuLine3;
 
     private int currentHaikuLineSyllables;
     private int currentHaikuLine;
@@ -60,6 +60,7 @@ public class MainInteractionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         syllableDict = new HashMap<>();
 
         adjectivesArr = getResources().getStringArray(R.array.adjectives);
@@ -95,32 +96,38 @@ public class MainInteractionFragment extends Fragment {
             otherArr[i] = temp;
         }
 
-        currentHaikuLine = 1;
-        currentHaikuLineSyllables = 0;
-        isHaikuFull = false;
-        wordToAdd = "";
-        currentRadioId = -1;
+        if (savedInstanceState == null) {
+            currentHaikuLine = 1;
+            currentHaikuLineSyllables = 0;
+            isHaikuFull = false;
+            wordToAdd = "";
+            currentRadioId = -1;
+        }
+        else {
+            currentHaikuLine = savedInstanceState.getInt("CURRENTHAIKULINE");
+            currentHaikuLineSyllables = savedInstanceState.getInt("CURRENTHAIKULINESYLLABLES");
+            isHaikuFull = savedInstanceState.getBoolean("ISHAIKUFULL");
+            wordToAdd = savedInstanceState.getString("WORDTOADD");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main_interaction, container, false);
 
-        // hides buttons before user action
         mAddWordButton = (Button) v.findViewById(R.id.addButton);
-        mAddWordButton.setVisibility(View.INVISIBLE);
-
         mWordSpinner = (Spinner) v.findViewById(R.id.spinner);
-        mWordSpinner.setVisibility(View.INVISIBLE);
-
         mDeleteWordButton = (Button) v.findViewById(R.id.deleteButton);
-        mDeleteWordButton.setVisibility(View.INVISIBLE);
-
         mStartOverButton = (Button) v.findViewById(R.id.start_over_button);
-        mStartOverButton.setVisibility(View.INVISIBLE);
-
         mDisplayHaikuButton = (Button) v.findViewById(R.id.display_haiku_button);
-        mDisplayHaikuButton.setVisibility(View.INVISIBLE);
+        if (savedInstanceState == null) {
+            // hides buttons before user action
+            mAddWordButton.setVisibility(View.INVISIBLE);
+            mWordSpinner.setVisibility(View.INVISIBLE);
+            mDeleteWordButton.setVisibility(View.INVISIBLE);
+            mStartOverButton.setVisibility(View.INVISIBLE);
+            mDisplayHaikuButton.setVisibility(View.INVISIBLE);
+        }
 
         // Listener for radio buttons that update the spinner
         mRadioGroup = (RadioGroup) v.findViewById(R.id.radioGroup);
@@ -164,9 +171,9 @@ public class MainInteractionFragment extends Fragment {
         });
 
         //Listener for adding words to the Haiku and updating the spinner
-        mHaikuLine1 = (TextView) v.findViewById(R.id.textView1);
-        mHaikuLine2 = (TextView) v.findViewById(R.id.textView2);
-        mHaikuLine3 = (TextView) v.findViewById(R.id.textView3);
+        mHaikuLine1 = (EditText) v.findViewById(R.id.textView1);
+        mHaikuLine2 = (EditText) v.findViewById(R.id.textView2);
+        mHaikuLine3 = (EditText) v.findViewById(R.id.textView3);
         mAddWordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -370,6 +377,16 @@ public class MainInteractionFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        savedInstanceState.putInt("CURRENTHAIKULINE", currentHaikuLine);
+        savedInstanceState.putInt("CURRENTHAIKULINESYLLABLES", currentHaikuLineSyllables);
+        savedInstanceState.putBoolean("ISHAIKUFULL", isHaikuFull);
+        savedInstanceState.putString("WORDTOADD", wordToAdd);
     }
 
     private ArrayAdapter<CharSequence> populateArrayAdapter(int id, String[] array) {
