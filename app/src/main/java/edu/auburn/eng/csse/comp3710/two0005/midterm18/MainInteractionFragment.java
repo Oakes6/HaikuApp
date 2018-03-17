@@ -120,6 +120,7 @@ public class MainInteractionFragment extends Fragment {
         mDeleteWordButton = (Button) v.findViewById(R.id.deleteButton);
         mStartOverButton = (Button) v.findViewById(R.id.start_over_button);
         mDisplayHaikuButton = (Button) v.findViewById(R.id.display_haiku_button);
+
         if (savedInstanceState == null) {
             // hides buttons before user action
             mAddWordButton.setVisibility(View.INVISIBLE);
@@ -374,6 +375,26 @@ public class MainInteractionFragment extends Fragment {
                         mWordSpinner.setAdapter(adapter);
                     }
                 }
+            }
+        });
+
+        // Listener to launch fragment for viewing haiku
+        mDisplayHaikuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DisplayFragment fragment = new DisplayFragment();
+                line1 = mHaikuLine1.getText().toString();
+                line2 = mHaikuLine2.getText().toString();
+                line3 = mHaikuLine3.getText().toString();
+                Bundle args = new Bundle();
+                args.putString("view1", line1);
+                args.putString("view2", line2);
+                args.putString("view3", line3);
+                fragment.setArguments(args);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment, "findThisFrag")
+                        .addToBackStack(null).commit();
             }
         });
         return v;
