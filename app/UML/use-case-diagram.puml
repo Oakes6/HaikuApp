@@ -1,0 +1,13 @@
+@startuml
+actor User
+rectangle HaikuApp {
+  User -- (Add Word to Haiku)
+  (Add Word to Haiku) <|-- (Adjectives) : generalization
+  (Add Word to Haiku) <|-- (Nouns) : generalization
+  (Add Word to Haiku) <|-- (Verbs) : generalization
+  (Add Word to Haiku) <|-- (Other) : generalization
+  User -- (Delete Word)
+  User -- (Display Haiku)
+  User -- (Start Over)
+}
+@enduml

@@ -1,0 +1,72 @@
+@startsalt
+{
+{T
++ Add Word to Haiku
+++ Goal
++++ To add a viable word to a haiku
+++ Entry Conditions
++++ The haiku can't be full.
+++ Scenario
++++ The user opens the application and selects a word to add to the beginning of the haiku.
+++ Exceptions
++++ Haiku can't be full. Must have room to place another word.
+++ Exit Conditions
++++ Successful Exit Conditions
+++++ The haiku isn't full and a word get's placed into the haiku.
++++ Failure Exit Conditions
+++++ The application will not add a word to the haiku if it is full.
+}
+---
+{T
++ Delete Word
+++ Goal 
++++ To remove a word from the haiku being built.
+++ Entry Conditions
++++ The user must have placed at least one word in the haiku in order to remove one.
+++ Scenario 
++++ The user opens the app, places a word into the haiku, and then removes it.
+++ Exceptions
++++ The haiku must have at least one word.
+++ Exit Conditions
++++ Successful Exit Conditions
+++++ The haiku has at least one word.
++++ Failure Exit Conditions
+++++ The haiku is empty.
+}
+---
+{T
++ Display Word 
+++ Goal
++++ To display the haiku on a full screen.
+++ Entry Conditions
++++ The user must have placed at least one word in the haiku in order to view it.
+++ Scenario
++++ The user opens the app, places words in the haiku until it is finished, and then
++++ displays the haiku on a separate screen.
+++ Exceptions
++++ The haiku must have at least one word.
+++ Exit Conditions
++++ Successful Exit Conditions
+++++ The haiku has at least one word.
++++ Failure Exit Conditions
+++++ The haiku is empty.
+}
+---
+{T
++ Start Over
+++ Goal
++++ To restart the haiku for a fresh start.
+++ Entry Conditions
++++ The user must have placed at least one word in the haiku in order to start over.
+++ Scenario
++++ The user opens the app, builds part of a haiku, then decides to start it over.
+++ Exceptions
++++  The haiku must have at least one word.
+++ Exit Conditions
++++ Successful Exit Conditions
+++++ The haiku has at least one word placed in it.
++++ Failure Exit Conditions
+++++ The haiku is empty.
+}
+}
+@endsalt

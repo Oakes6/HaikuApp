@@ -1,0 +1,15 @@
+@startuml
+	HaikuAppScreen "1" *-- "1" WordTypeButton
+	HaikuAppScreen "1" *-- "4" AddWordButton
+	HaikuAppScreen "1" *-- "1" DropDownSpinner
+	HaikuAppScreen "1" *-- "1" DeleteWordButton
+	HaikuAppScreen "1" *-- "1" StartOverButton
+	HaikuAppScreen "1" *-- "1" DisplayButton
+	AddWordButton <|-- AdjectivesButton
+	AddWordButton <|-- NounsButton
+	AddWordButton <|-- VerbsButton
+	AddWordButton <|-- OtherButton
+
+	AddWordButton : int state	
+	HaikuAppScreen : String currentHaiku, View currentView
+@enduml

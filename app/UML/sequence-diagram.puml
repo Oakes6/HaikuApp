@@ -1,0 +1,16 @@
+@startuml
+User -> HaikuApp: Select Word Type
+HaikuApp --> User: Display word choice
+
+User -> HaikuApp: add word to haiku
+User <-- HaikuApp: display word in haiku
+
+User -> HaikuApp: delete last word
+User <-- HaikuApp: display updated haiku
+
+User -> HaikuApp: click haiku display button
+User <-- HaikuApp: display full haiku
+
+User -> HaikuApp: start over
+User <-- HaikuApp: clear Haiku
+@enduml
